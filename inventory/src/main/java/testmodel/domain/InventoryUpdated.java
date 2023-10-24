@@ -7,10 +7,9 @@ import testmodel.infra.AbstractEvent;
 
 @Data
 @ToString
-@NoArgConstructor
 public class InventoryUpdated extends AbstractEvent {
 
-    private Long productId;
+    private Long id;
     private Integer stock;
 
     public InventoryUpdated(Inventory aggregate) {
