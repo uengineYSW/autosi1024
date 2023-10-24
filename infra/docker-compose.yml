@@ -1,0 +1,13 @@
+services:
+  order:
+    image: ghcr.io///order:
+    ports:
+      - 8080:8080
+    volumes:
+      - ./path/to/order/config:/app/config
+  inventory:
+    image: ghcr.io///inventory:
+    ports:
+      - 8080:8080
+    volumes:
+      - ./path/to/inventory/config:/app/config
