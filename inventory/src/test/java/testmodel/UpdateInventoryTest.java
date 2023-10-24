@@ -60,7 +60,7 @@ public class UpdateInventoryTest {
 
         event.setId(1L);
         event.setProductId("p1");
-        event.setQty(5);
+        event.setQty(5)
 
         InventoryApplication.applicationContext = applicationContext;
 
