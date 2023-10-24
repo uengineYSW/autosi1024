@@ -43,13 +43,14 @@ public class Inventory {
     public static void updateInventory(OrderPlaced orderPlaced) {
         //implement business logic here:
 
-        /** Example 1:  new item 
+        // /** Example 1:  new item 
         Inventory inventory = new Inventory();
         repository().save(inventory);
 
         InventoryUpdated inventoryUpdated = new InventoryUpdated(inventory);
+        inventory.setProductId(orderPlaced.getId());
         inventoryUpdated.publishAfterCommit();
-        */
+        // */
 
         /** Example 2:  finding and process
         
