@@ -1,0 +1,14 @@
+name: test
+run-name: ${{ github.actor }} is testing 
+on: [push]
+
+
+jobs:
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+    - name: Test
+      run: |
+        mvn test -f ./inventory/pom.xml
