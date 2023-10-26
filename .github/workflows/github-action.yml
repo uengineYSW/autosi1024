@@ -12,3 +12,4 @@ jobs:
     - name: Test
       run: |
         mvn test -f ./inventory/pom.xml
+        mvn test -f ./order/pom.xml
