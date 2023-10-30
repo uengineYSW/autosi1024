@@ -1,13 +1,11 @@
 package testmodel.domain;
 
-import java.util.*;
-import lombok.*;
-import testmodel.domain.*;
-import testmodel.infra.AbstractEvent;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import testmodel.domain.AbstractEvent;
 
 @Data
-@ToString
-@NoArgConstructor
+@EqualsAndHashCode(callSuper = true)
 public class InventoryUpdated extends AbstractEvent {
 
     private Long productId;

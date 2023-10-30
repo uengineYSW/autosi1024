@@ -1,4 +1,4 @@
-package testmodel.domain;
+package testmodel.domainaaaa;
 
 import java.util.Date;
 import java.util.List;
