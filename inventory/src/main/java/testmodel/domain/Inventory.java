@@ -1,4 +1,4 @@
-package testmodel.domainaaaa;
+package testmodel.domaiccasn;
 
 import java.util.Date;
 import java.util.List;
