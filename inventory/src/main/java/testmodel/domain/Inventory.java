@@ -1,61 +1,46 @@
 package testmodel.domain;
 
-import testmodel.InventoryApplication;
-import javax.persistence.*;aa
+import java.util.Date;
 import java.util.List;
-import lombok.Data;ew
-import java.util.Date;dsada
-
+import javax.persistence.*;
+import lombok.Data;
+import testmodel.InventoryApplication;
 
 @Entity
-@Table(name="Inventory_table")
+@Table(name = "Inventory_table")
 @Data
-
 //<<< DDD / Aggregate Root
-public class Inventory  {
+public class Inventory {
 
-
-    
     @Id
     //@GeneratedValue(strategy=GenerationType.AUTO)
-    
-    
-    
-    
-    
+
     private Long productId;
-    
-    
-    
-    
-    
+
     private Integer stock;
 
     @PostPersist
-    public void onPostPersist(){
-    }
+    public void onPostPersist() {}
 
-    public static InventoryRepository repository(){
-        InventoryRepository inventoryRepository = InventoryApplication.applicationContext.getBean(InventoryRepository.class);
+    public static InventoryRepository repository() {
+        InventoryRepository inventoryRepository = InventoryApplication.applicationContext.getBean(
+            InventoryRepository.class
+        );
         return inventoryRepository;
     }
 
-
-
-//<<< Clean Arch / Port Method
-    public void decreaseStock(DecreaseStockCommand decreaseStockCommand){
-        
+    //<<< Clean Arch / Port Method
+    public void decreaseStock(DecreaseStockCommand decreaseStockCommand) {
         //implement business logic here:
-        
+
         InventoryUpdated inventoryUpdated = new InventoryUpdated(this);
         inventoryUpdated.publishAfterCommit();
-
     }
-//>>> Clean Arch / Port Method
 
-//<<< Clean Arch / Port Method
-    public static void updateInventory(OrderPlaced orderPlaced){
-        
+    //>>> Clean Arch / Port Method
+
+    //<<< Clean Arch / Port Method
+    public static void updateInventory(OrderPlaced orderPlaced) {
         //implement business logic here:
 
         /** Example 1:  new item 
@@ -79,10 +64,8 @@ public class Inventory  {
          });
         */
 
-        
     }
-//>>> Clean Arch / Port Method
-
+    //>>> Clean Arch / Port Method
 
 }
 //>>> DDD / Aggregate Root
