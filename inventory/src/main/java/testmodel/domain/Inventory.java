@@ -14,7 +14,6 @@ public class Inventory {
 
     @Id
     //@GeneratedValue(strategy=GenerationType.AUTO)
-
     private Long productId;
 
     private Integer stock;
@@ -31,8 +30,12 @@ public class Inventory {
 
     //<<< Clean Arch / Port Method
     public void decreaseStock(DecreaseStockCommand decreaseStockCommand) {
-        //implement business logic here:
-
+        // Decrease the stock by the quantity specified in the command
+        stock -= decreaseStockCommand.getQty();
+        // Check if the stock is below 0 and set it to 0
+        if (stock < 0) {
+            stock = 0;
+        }
         InventoryUpdated inventoryUpdated = new InventoryUpdated(this);
         inventoryUpdated.publishAfterCommit();
     }
@@ -41,31 +44,22 @@ public class Inventory {
 
     //<<< Clean Arch / Port Method
     public static void updateInventory(OrderPlaced orderPlaced) {
-        //implement business logic here:
-
-        /** Example 1:  new item 
-        Inventory inventory = new Inventory();
-        repository().save(inventory);
-
-        InventoryUpdated inventoryUpdated = new InventoryUpdated(inventory);
-        inventoryUpdated.publishAfterCommit();
-        */
-
-        /** Example 2:  finding and process
-        
-        repository().findById(orderPlaced.get???()).ifPresent(inventory->{
-            
-            inventory // do something
-            repository().save(inventory);
-
-            InventoryUpdated inventoryUpdated = new InventoryUpdated(inventory);
-            inventoryUpdated.publishAfterCommit();
-
-         });
-        */
-
+        repository()
+            .findById(orderPlaced.getId())
+            .ifPresent(inventory -> {
+                // Update the stock based on the order quantity
+                inventory.setStock(inventory.getStock() - orderPlaced.getQty());
+                // Check if the stock is below 0 and set it to 0
+                if (inventory.getStock() < 0) {
+                    inventory.setStock(0);
+                }
+                repository().save(inventory);
+                InventoryUpdated inventoryUpdated = new InventoryUpdated(
+                    inventory
+                );
+                inventoryUpdated.publishAfterCommit();
+            });
     }
     //>>> Clean Arch / Port Method
-
 }
 //>>> DDD / Aggregate Root
