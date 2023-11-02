@@ -9,9 +9,12 @@ import testmodel.InventoryApplication;
 @Entity
 @Table(name = "Inventory_table")
 @Data
+//<<< DDD / Aggregate Root
 public class Inventory {
 
     @Id
+    //@GeneratedValue(strategy=GenerationType.AUTO)
+
     private Long productId;
 
     private Integer stock;
@@ -26,15 +29,12 @@ public class Inventory {
         return inventoryRepository;
     }
 
+    //<<< Clean Arch / Port Method
     public void decreaseStock(DecreaseStockCommand decreaseStockCommand) {
-        // Implement business logic here
-    }
+        this.stock -= decreaseStockCommand.getQty();
 
-    public static void updateInventory(OrderPlaced orderPlaced) {
-        // Implement business logic here
-        Inventory inventory = new Inventory();
-        repository().save(inventory);
-        InventoryUpdated inventoryUpdated = new InventoryUpdated(inventory);
+        InventoryUpdated inventoryUpdated = new InventoryUpdated(this);
         inventoryUpdated.publishAfterCommit();
     }
 }
+//>>> DDD / Aggregate Root
