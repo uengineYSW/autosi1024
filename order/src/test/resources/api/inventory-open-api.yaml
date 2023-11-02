@@ -104,6 +104,31 @@ paths:
           type: integer
         in: path
         required: true
+  /inventories/search/findInventory:
+    summary: findInventory query on inventories
+    get:
+      parameters:
+        - name: name
+          description: Name
+          schema:
+            type: integer
+          in: query
+          required: false
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Inventory'
+              examples:
+                '1':
+                  value:
+                    productId: 1
+                    stock: 1
+          description: FindInventory Query
+      operationId: FindInventory
+      summary: FindInventory
+      description: FindInventory
   '/inventories/{id}/update':
     summary: decrease stock operation on inventories
     get:
@@ -135,31 +160,6 @@ paths:
       operationId: DecreaseStock
       summary: DecreaseStock
       description: DecreaseStock
-  /inventories/search/findInventory:
-    summary: findInventory query on inventories
-    get:
-      parameters:
-        - name: name
-          description: Name
-          schema:
-            type: integer
-          in: query
-          required: false
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Inventory'
-              examples:
-                '1':
-                  value:
-                    productId: 1
-                    stock: 1
-          description: FindInventory Query
-      operationId: FindInventory
-      summary: FindInventory
-      description: FindInventory
 components:
   schemas:
     Inventory:

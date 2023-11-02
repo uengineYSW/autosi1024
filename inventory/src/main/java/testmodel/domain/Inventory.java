@@ -30,12 +30,11 @@ public class Inventory {
 
     //<<< Clean Arch / Port Method
     public void decreaseStock(DecreaseStockCommand decreaseStockCommand) {
-        // Decrease the stock by the quantity specified in the command
-        stock -= decreaseStockCommand.getQty();
-        // Check if the stock is below 0 and set it to 0
-        if (stock < 0) {
-            stock = 0;
+        if (decreaseStockCommand.getQty() > this.stock) {
+            throw new RuntimeException("Insufficient stock");
         }
+        this.stock -= decreaseStockCommand.getQty();
+
         InventoryUpdated inventoryUpdated = new InventoryUpdated(this);
         inventoryUpdated.publishAfterCommit();
     }
@@ -45,14 +44,9 @@ public class Inventory {
     //<<< Clean Arch / Port Method
     public static void updateInventory(OrderPlaced orderPlaced) {
         repository()
-            .findById(orderPlaced.getId())
+            .findById(orderPlaced.getProductId())
             .ifPresent(inventory -> {
-                // Update the stock based on the order quantity
                 inventory.setStock(inventory.getStock() - orderPlaced.getQty());
-                // Check if the stock is below 0 and set it to 0
-                if (inventory.getStock() < 0) {
-                    inventory.setStock(0);
-                }
                 repository().save(inventory);
                 InventoryUpdated inventoryUpdated = new InventoryUpdated(
                     inventory

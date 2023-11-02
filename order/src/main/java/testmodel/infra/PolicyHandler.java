@@ -17,28 +17,8 @@ import testmodel.domain.*;
 public class PolicyHandler {
 
     @Autowired
-    InventoryRepository inventoryRepository;
+    OrderRepository orderRepository;
 
     @StreamListener(KafkaProcessor.INPUT)
     public void whatever(@Payload String eventString) {}
-
-    @StreamListener(
-        value = KafkaProcessor.INPUT,
-        condition = "headers['type']=='OrderPlaced'"
-    )
-    public void wheneverOrderPlaced_UpdateInventory(
-        @Payload OrderPlaced orderPlaced
-    ) {
-        OrderPlaced event = orderPlaced;
-        System.out.println(
-            "\n\n##### listener UpdateInventory : " + orderPlaced + "\n\n"
-        );
-        // Sample Logic //
-        Inventory.updateInventory(event);
-        // Get the updated inventory from repository and save it
-        Inventory updatedInventory = inventoryRepository
-            .findById(event.getId())
-            .get();
-        inventoryRepository.save(updatedInventory);
-    }
 }
