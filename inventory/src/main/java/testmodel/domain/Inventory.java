@@ -13,7 +13,6 @@ import testmodel.InventoryApplication;
 public class Inventory {
 
     @Id
-    //@GeneratedValue(strategy=GenerationType.AUTO)
     private Long productId;
 
     private Integer stock;
@@ -28,32 +27,21 @@ public class Inventory {
         return inventoryRepository;
     }
 
-    //<<< Clean Arch / Port Method
     public void decreaseStock(DecreaseStockCommand decreaseStockCommand) {
-        if (decreaseStockCommand.getQty() > this.stock) {
-            throw new RuntimeException("Insufficient stock");
-        }
-        this.stock -= decreaseStockCommand.getQty();
-
-        InventoryUpdated inventoryUpdated = new InventoryUpdated(this);
-        inventoryUpdated.publishAfterCommit();
+        // implement business logic to decrease stock based on the decreaseStockCommand
     }
 
-    //>>> Clean Arch / Port Method
-
-    //<<< Clean Arch / Port Method
     public static void updateInventory(OrderPlaced orderPlaced) {
         repository()
-            .findById(orderPlaced.getProductId())
+            .findById(orderPlaced.getId())
             .ifPresent(inventory -> {
                 inventory.setStock(inventory.getStock() - orderPlaced.getQty());
                 repository().save(inventory);
+
                 InventoryUpdated inventoryUpdated = new InventoryUpdated(
                     inventory
                 );
                 inventoryUpdated.publishAfterCommit();
             });
     }
-    //>>> Clean Arch / Port Method
 }
-//>>> DDD / Aggregate Root
