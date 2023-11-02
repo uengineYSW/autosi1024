@@ -25,6 +25,37 @@ paths:
       operationId: FindInventory
       summary: FindInventory
       description: FindInventory
+  '/inventories/{id}/update':
+    summary: decrease stock operation on inventories
+    get:
+      parameters:
+        - name: productId
+          description: ProductId
+          schema:
+            type: integer
+          in: query
+          required: false
+        - name: qty
+          description: Qty
+          schema:
+            type: integer
+          in: query
+          required: false
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Inventory'
+              examples:
+                '1':
+                  value:
+                    productId: 1
+                    stock: 1
+          description: DecreaseStock Operation
+      operationId: DecreaseStock
+      summary: DecreaseStock
+      description: DecreaseStock
   /inventories:
     summary: Global operations on inventories
     get:
@@ -117,37 +148,6 @@ paths:
           type: integer
         in: path
         required: true
-  '/inventories/{id}/update':
-    summary: decrease stock operation on inventories
-    get:
-      parameters:
-        - name: productId
-          description: ProductId
-          schema:
-            type: integer
-          in: query
-          required: false
-        - name: qty
-          description: Qty
-          schema:
-            type: integer
-          in: query
-          required: false
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Inventory'
-              examples:
-                '1':
-                  value:
-                    productId: 1
-                    stock: 1
-          description: DecreaseStock Operation
-      operationId: DecreaseStock
-      summary: DecreaseStock
-      description: DecreaseStock
 openapi: 3.0.2
 info:
   title: Inventory
