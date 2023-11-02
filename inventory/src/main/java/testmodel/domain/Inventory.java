@@ -9,63 +9,37 @@ import testmodel.InventoryApplication;
 @Entity
 @Table(name = "Inventory_table")
 @Data
-//<<< DDD / Aggregate Root
 public class Inventory {
 
     @Id
-    //@GeneratedValue(strategy=GenerationType.AUTO)
-
     private Long productId;
 
     private Integer stock;
 
-    @PostPersist
-    public void onPostPersist() {}
+    //... rest of the code ...
 
-    public static InventoryRepository repository() {
-        InventoryRepository inventoryRepository = InventoryApplication.applicationContext.getBean(
-            InventoryRepository.class
-        );
-        return inventoryRepository;
-    }
-
-    //<<< Clean Arch / Port Method
-    public void decreaseStock(DecreaseStockCommand decreaseStockCommand) {
-        //implement business logic here:
-
-        InventoryUpdated inventoryUpdated = new InventoryUpdated(this);
-        inventoryUpdated.publishAfterCommit();
-    }
-
-    //>>> Clean Arch / Port Method
-
-    //<<< Clean Arch / Port Method
     public static void updateInventory(OrderPlaced orderPlaced) {
-        //implement business logic here:
+        // Implement the business logic here
 
-        /** Example 1:  new item 
-        Inventory inventory = new Inventory();
-        repository().save(inventory);
+        // Find the inventory by product ID
+        Inventory inventory = repository()
+            .findById(orderPlaced.getProductId())
+            .orElse(null);
+        if (inventory != null) {
+            // Decrease the stock
+            inventory.setStock(inventory.getStock() - orderPlaced.getQty());
 
-        InventoryUpdated inventoryUpdated = new InventoryUpdated(inventory);
-        inventoryUpdated.publishAfterCommit();
-        */
-
-        /** Example 2:  finding and process
-        
-        repository().findById(orderPlaced.get???()).ifPresent(inventory->{
-            
-            inventory // do something
+            // Save the updated inventory
             repository().save(inventory);
 
+            // Publish the inventory updated event
             InventoryUpdated inventoryUpdated = new InventoryUpdated(inventory);
             inventoryUpdated.publishAfterCommit();
-
-         });
-        */
-
+        }
     }
-    //>>> Clean Arch / Port Method
 
+    public void decreaseStock(DecreaseStockCommand decreaseStockCommand) {
+        // Implement the business logic here
+    }
+    //... rest of the code ...
 }
-//>>> DDD / Aggregate Root
