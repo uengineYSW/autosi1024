@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RestController;
 import testmodel.domain.*;
 
 @RestController
-// @RequestMapping(value="/inventories")
 @Transactional
 public class InventoryController {
 
@@ -29,15 +28,12 @@ public class InventoryController {
         HttpServletRequest request,
         HttpServletResponse response
     ) throws Exception {
-        System.out.println("##### /inventory/decreaseStock  called #####");
         Optional<Inventory> optionalInventory = inventoryRepository.findById(
             id
         );
-
         optionalInventory.orElseThrow(() -> new Exception("No Entity Found"));
         Inventory inventory = optionalInventory.get();
         inventory.decreaseStock(decreaseStockCommand);
-
         inventoryRepository.save(inventory);
         return inventory;
     }
