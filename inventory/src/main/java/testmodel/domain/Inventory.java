@@ -19,7 +19,8 @@ public class Inventory {
 
     private Integer stock;
 
-    @PostPersist
+    public Inventory() {}
+
     public void onPostPersist() {}
 
     public static InventoryRepository repository() {
@@ -29,43 +30,41 @@ public class Inventory {
         return inventoryRepository;
     }
 
-    //<<< Clean Arch / Port Method
     public void decreaseStock(DecreaseStockCommand decreaseStockCommand) {
-        //implement business logic here:
+        // Implement decrease stock logic
+        if (this.stock >= decreaseStockCommand.getQty()) {
+            this.stock -= decreaseStockCommand.getQty();
 
-        InventoryUpdated inventoryUpdated = new InventoryUpdated(this);
-        inventoryUpdated.publishAfterCommit();
-    }
-
-    //>>> Clean Arch / Port Method
-
-    //<<< Clean Arch / Port Method
-    public static void updateInventory(OrderPlaced orderPlaced) {
-        //implement business logic here:
-
-        /** Example 1:  new item 
-        Inventory inventory = new Inventory();
-        repository().save(inventory);
-
-        InventoryUpdated inventoryUpdated = new InventoryUpdated(inventory);
-        inventoryUpdated.publishAfterCommit();
-        */
-
-        /** Example 2:  finding and process
-        
-        repository().findById(orderPlaced.get???()).ifPresent(inventory->{
-            
-            inventory // do something
-            repository().save(inventory);
-
-            InventoryUpdated inventoryUpdated = new InventoryUpdated(inventory);
+            InventoryUpdated inventoryUpdated = new InventoryUpdated(this);
             inventoryUpdated.publishAfterCommit();
-
-         });
-        */
-
+        } else {
+            throw new RuntimeException("Not enough stock to decrease");
+        }
     }
-    //>>> Clean Arch / Port Method
 
+    public static void updateInventory(OrderPlaced orderPlaced) {
+        // Implement update inventory logic
+        Long productId = Long.parseLong(
+            orderPlaced.getProductId().substring(1)
+        );
+
+        repository()
+            .findById(productId)
+            .ifPresent(inventory -> {
+                if (inventory.getStock() >= orderPlaced.getQty()) {
+                    inventory.setStock(
+                        inventory.getStock() - orderPlaced.getQty()
+                    );
+                    repository().save(inventory);
+
+                    InventoryUpdated inventoryUpdated = new InventoryUpdated(
+                        inventory
+                    );
+                    inventoryUpdated.publishAfterCommit();
+                } else {
+                    throw new RuntimeException("Not enough stock to update");
+                }
+            });
+    }
 }
 //>>> DDD / Aggregate Root
