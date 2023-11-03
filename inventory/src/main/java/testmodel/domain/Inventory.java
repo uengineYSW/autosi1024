@@ -9,62 +9,48 @@ import testmodel.InventoryApplication;
 @Entity
 @Table(name = "Inventory_table")
 @Data
-//<<< DDD / Aggregate Root
 public class Inventory {
 
     @Id
-    //@GeneratedValue(strategy=GenerationType.AUTO)
-
     private Long productId;
 
     private Integer stock;
 
-    public Inventory() {}
-
-    public void onPostPersist() {}
-
-    public static InventoryRepository repository() {
-        InventoryRepository inventoryRepository = InventoryApplication.applicationContext.getBean(
-            InventoryRepository.class
-        );
-        return inventoryRepository;
-    }
-
     public void decreaseStock(DecreaseStockCommand decreaseStockCommand) {
-        // Implement decrease stock logic
-        if (this.stock >= decreaseStockCommand.getQty()) {
-            this.stock -= decreaseStockCommand.getQty();
+        // Implement the business logic to decrease the stock based on the decreaseStockCommand
+        // For example, you can subtract the 'qty' from the 'stock'
+        stock -= decreaseStockCommand.getQty();
 
-            InventoryUpdated inventoryUpdated = new InventoryUpdated(this);
-            inventoryUpdated.publishAfterCommit();
-        } else {
-            throw new RuntimeException("Not enough stock to decrease");
+        // Check if the stock is less than or equal to 0
+        if (stock <= 0) {
+            // Handle out of stock scenario
         }
+
+        // Save the updated inventory
+        InventoryApplication.repository().save(this);
+
+        // Publish InventoryUpdated event
+        InventoryUpdated inventoryUpdated = new InventoryUpdated(this);
+        inventoryUpdated.publishAfterCommit();
     }
 
     public static void updateInventory(OrderPlaced orderPlaced) {
-        // Implement update inventory logic
-        Long productId = Long.parseLong(
-            orderPlaced.getProductId().substring(1)
-        );
+        // Implement the business logic to update the inventory based on the orderPlaced event
+        // For example, you can find the inventory by productId and update the stock
+        Inventory inventory = InventoryApplication
+            .repository()
+            .findById(orderPlaced.getProductId())
+            .orElse(null);
+        if (inventory != null) {
+            // Update the stock based on the orderPlaced event
+            inventory.setStock(orderPlaced.getQty());
 
-        repository()
-            .findById(productId)
-            .ifPresent(inventory -> {
-                if (inventory.getStock() >= orderPlaced.getQty()) {
-                    inventory.setStock(
-                        inventory.getStock() - orderPlaced.getQty()
-                    );
-                    repository().save(inventory);
+            // Save the updated inventory
+            InventoryApplication.repository().save(inventory);
 
-                    InventoryUpdated inventoryUpdated = new InventoryUpdated(
-                        inventory
-                    );
-                    inventoryUpdated.publishAfterCommit();
-                } else {
-                    throw new RuntimeException("Not enough stock to update");
-                }
-            });
+            // Publish InventoryUpdated event
+            InventoryUpdated inventoryUpdated = new InventoryUpdated(inventory);
+            inventoryUpdated.publishAfterCommit();
+        }
     }
 }
-//>>> DDD / Aggregate Root
