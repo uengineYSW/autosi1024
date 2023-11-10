@@ -1,8 +1,7 @@
 package testmodel.external;
 
-import java.util.Date;
 import lombok.Data;
-
+import java.util.Date;
 @Data
 public class Order {
 
@@ -10,3 +9,5 @@ public class Order {
     private String productId;
     private Integer qty;
 }
+
+

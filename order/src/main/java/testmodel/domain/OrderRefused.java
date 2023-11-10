@@ -1,9 +1,9 @@
 package testmodel.domain;
 
-import java.util.*;
-import lombok.*;
 import testmodel.domain.*;
 import testmodel.infra.AbstractEvent;
+import java.util.*;
+import lombok.*;
 
 @Data
 @ToString
@@ -12,11 +12,10 @@ public class OrderRefused extends AbstractEvent {
 
     private Long id;
 
-    public OrderRefused(Order aggregate) {
+    public OrderRefused(Order aggregate){
         super(aggregate);
     }
-
-    public OrderRefused() {
+    public OrderRefused(){
         super();
     }
 }

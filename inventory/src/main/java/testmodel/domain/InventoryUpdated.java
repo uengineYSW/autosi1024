@@ -1,9 +1,9 @@
 package testmodel.domain;
 
-import java.util.*;
-import lombok.*;
 import testmodel.domain.*;
 import testmodel.infra.AbstractEvent;
+import java.util.*;
+import lombok.*;
 
 @Data
 @ToString
@@ -13,11 +13,10 @@ public class InventoryUpdated extends AbstractEvent {
     private Long productId;
     private Integer stock;
 
-    public InventoryUpdated(Inventory aggregate) {
+    public InventoryUpdated(Inventory aggregate){
         super(aggregate);
     }
-
-    public InventoryUpdated() {
+    public InventoryUpdated(){
         super();
     }
 }

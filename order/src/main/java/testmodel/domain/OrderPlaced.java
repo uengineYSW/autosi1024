@@ -1,9 +1,9 @@
 package testmodel.domain;
 
-import java.util.*;
-import lombok.*;
 import testmodel.domain.*;
 import testmodel.infra.AbstractEvent;
+import java.util.*;
+import lombok.*;
 
 @Data
 @ToString
@@ -14,11 +14,10 @@ public class OrderPlaced extends AbstractEvent {
     private String productId;
     private Integer qty;
 
-    public OrderPlaced(Order aggregate) {
+    public OrderPlaced(Order aggregate){
         super(aggregate);
     }
-
-    public OrderPlaced() {
+    public OrderPlaced(){
         super();
     }
 }
