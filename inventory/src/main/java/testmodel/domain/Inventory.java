@@ -12,6 +12,9 @@ import testmodel.InventoryApplication;
 //<<< DDD / Aggregate Root
 public class Inventory {
 
+    @Id
+    //@GeneratedValue(strategy=GenerationType.AUTO)
+
     private Long productId;
 
     private Integer stock;
@@ -26,19 +29,14 @@ public class Inventory {
         return inventoryRepository;
     }
 
-    //<<< Clean Arch / Port Method
     public void decreaseStock(DecreaseStockCommand decreaseStockCommand) {
         //implement business logic here:
-
         this.stock -= decreaseStockCommand.getQty();
 
         InventoryUpdated inventoryUpdated = new InventoryUpdated(this);
         inventoryUpdated.publishAfterCommit();
     }
 
-    //>>> Clean Arch / Port Method
-
-    //<<< Clean Arch / Port Method
     public static void updateInventory(OrderPlaced orderPlaced) {
         //implement business logic here:
 
@@ -63,27 +61,12 @@ public class Inventory {
          });
         */
 
-        if (orderPlaced.getProductId().equals("p1")) {
-            Inventory inventory = repository().findById(1L).orElse(null);
-            if (inventory != null) {
-                inventory.setStock(inventory.getStock() - orderPlaced.getQty());
+        repository()
+            .findById(orderPlaced.getId())
+            .ifPresent(inventory -> {
+                inventory.decreaseStock(orderPlaced);
                 repository().save(inventory);
-            }
-        } else if (orderPlaced.getProductId().equals("p2")) {
-            Inventory inventory = repository().findById(2L).orElse(null);
-            if (inventory != null) {
-                inventory.setStock(inventory.getStock() - orderPlaced.getQty());
-                repository().save(inventory);
-            }
-        } else if (orderPlaced.getProductId().equals("p3")) {
-            Inventory inventory = repository().findById(3L).orElse(null);
-            if (inventory != null) {
-                inventory.setStock(inventory.getStock() - orderPlaced.getQty());
-                repository().save(inventory);
-            }
-        }
+            });
     }
-    //>>> Clean Arch / Port Method
-
 }
 //>>> DDD / Aggregate Root

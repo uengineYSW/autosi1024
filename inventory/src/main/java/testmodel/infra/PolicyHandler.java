@@ -36,5 +36,8 @@ public class PolicyHandler {
 
         // Sample Logic //
         Inventory.updateInventory(event);
+
+        InventoryUpdated inventoryUpdated = new InventoryUpdated(event);
+        inventoryUpdated.publishAfterCommit();
     }
 }
