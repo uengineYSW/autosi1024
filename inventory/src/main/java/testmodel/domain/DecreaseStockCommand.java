@@ -10,11 +10,4 @@ public class DecreaseStockCommand {
 
     private Long productId;
     private Integer qty;
-
-    public DecreaseStockCommand() {}
-
-    public DecreaseStockCommand(Long productId, Integer qty) {
-        this.productId = productId;
-        this.qty = qty;
-    }
 }
